@@ -1,0 +1,674 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Manual Pembuatan Sistem LoRa</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2fd139e4-bd5a-4098-8efc-8e9c255fe2e7" class="page sans"><header><h1 class="page-title">Manual Pembuatan Sistem LoRa</h1></header><div class="page-body"><h2 id="a759bc00-b2b7-40dd-8717-919714b24671" class="">Hardware yang digunakan :</h2><ul id="aa9e8b12-4041-485c-81df-48cb749f3ac4" class="bulleted-list"><li style="list-style-type:disc">HT-M00 LoRa Gateway</li></ul><ul id="5a5d8e21-5727-436a-bf10-b02486435d30" class="bulleted-list"><li style="list-style-type:disc">Heltec Wifi LoRa V2 Node</li></ul><h2 id="d731ff91-47ed-4a70-99e4-015202b5ae42" class="">Software yang digunakan:</h2><ul id="9c45f685-8ca2-47ab-a79c-cda5146c9f32" class="bulleted-list"><li style="list-style-type:disc">The things Network sebagai server</li></ul><ul id="d7df2536-3212-4780-bd14-8d4c219491e9" class="bulleted-list"><li style="list-style-type:disc">Visual Studio sebagai platform IDE</li></ul><ul id="543f3a8f-a82f-4090-b5c4-d345209d2fba" class="bulleted-list"><li style="list-style-type:disc">Platform IO sebagai plugin Visual Studio untuk pengembangan IoT</li></ul><ul id="9d2ab0a5-fe82-42cd-8142-5783098ba670" class="bulleted-list"><li style="list-style-type:disc">Framework LMIC Node untuk mengirimkan payload lewat Node</li></ul><h2 id="2d4f1007-5d20-421c-9fc7-bc4606da7b0c" class="">Proses pengembangan yang dilakukan</h2><h3 id="3fb5fa51-2468-4f57-9b33-a1dda425c95b" class="">Registrasi Hardware pada The Things Network (TTN)</h3><p id="61646ddb-426a-4a06-ba47-c91dc088f0df" class="">Proses yang dilalui untuk melakukan registrasi the things network secara berurut adalah sebagai berikut:</p><ul id="de13c05a-1090-45ea-bc17-ab56601cbd23" class="bulleted-list"><li style="list-style-type:disc">Membuat akun TTN</li></ul><ul id="84ba4fd4-420f-4943-8881-64ed329ec27a" class="bulleted-list"><li style="list-style-type:disc">Registrasi Node pada TTN. Pastikan perangkat yang digunakan sudah memiliki template pada server TTN sehingga hanya perlu memilih jenis perangkat yang tepat. Jika belum, maka bisa mencari dokumentasi cara registrasi perangkat yang digunakan pada TTN. Untuk Detail dari registrasi pengaturan perangkat yang digunakan dalam dokumen ini adalah sebagai berikut :<ul id="5f42445c-cde1-4e3f-9303-26eeeae8c388" class="bulleted-list"><li style="list-style-type:circle">Brand: Heltec Automation</li></ul><ul id="5bc77ea3-1e54-49ba-8668-dce45a8cfc6f" class="bulleted-list"><li style="list-style-type:circle">Model: WiFi LoRa (V2) (Class A OTAA)</li></ul><ul id="5482c31c-b28c-424a-979c-a5716805343a" class="bulleted-list"><li style="list-style-type:circle">Profile Region: EU_863_870</li></ul><ul id="5fcea491-9ce5-40c1-b548-14dea6b475aa" class="bulleted-list"><li style="list-style-type:circle">Frequency Plan: Europe 863-870 MHz (SF9 for RX2 - recommended)</li></ul><ul id="a56b7ce3-9731-40e5-805c-082bf2367e38" class="bulleted-list"><li style="list-style-type:circle">AppEUI: Klik tombol “Fill with zeros”</li></ul><ul id="964df27b-9ea5-41c9-ab1d-59e720b90230" class="bulleted-list"><li style="list-style-type:circle">DevEUI: Klik tombol “Generate”</li></ul><ul id="011f68f4-8ad7-4f7f-b1e4-d27280ceb95a" class="bulleted-list"><li style="list-style-type:circle">AppKey: Klik tombol “Generate”</li></ul><ul id="0fb2bc6d-b3a3-4c88-aa96-4150b4ea7744" class="bulleted-list"><li style="list-style-type:circle">End Device ID: masukan nama unik apa saja</li></ul><p id="752d49a7-6658-4d3b-b511-f36f6cb8f889" class="">Jika sudah selesai, klik “Register end device”</p><figure id="e08a4cc1-e4d4-4584-bc59-572fddde9cd5" class="image"><a href="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/00._Registrasi_End_Device.png"><img style="width:3360px" src="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/00._Registrasi_End_Device.png"/></a></figure></li></ul><blockquote id="79b88a97-d737-4170-b2c0-624ab410a916" class="">Sedikit catatan. Pada eksperimen ini penulis menggunakan region Europe 863-870. Tetapi dalam melakukan registrasi, region harus disesuaikan dengan ketentuan masing-masing negara agar tidak melanggar ketentuan pemakaian frekuensi radio. Daftar negara dan frekuensi LoRa yang ditentukan dapa dilihat pada website ini:
+<a href="https://www.thethingsnetwork.org/docs/lorawan/frequencies-by-country/">https://www.thethingsnetwork.org/docs/lorawan/frequencies-by-country/</a></blockquote><p id="3c9540e6-c0a9-4b5d-bcc2-021024c75ca0" class="">
+</p><ul id="91897e18-d1bd-4297-b94f-9c7b54b14ced" class="bulleted-list"><li style="list-style-type:disc">Kemudian dilanjutkan dengan melakukan registrasi Gateway pada TTN dengan proses seperti berikut:<ul id="6188de53-3cdb-466c-ab44-de705833252e" class="bulleted-list"><li style="list-style-type:circle">Gateway ID: masukan nama unik apa saja</li></ul><ul id="ca91585b-25f8-4e87-a0e0-465685379bd9" class="bulleted-list"><li style="list-style-type:circle">Gateway EUI: Biasanya diberikan oleh manufaktur alat, tetapi dalam penggunaan gateway heltec, yakni perangkat yang digunakan penulis, EUI dapat diatur sesuai kebutuhan. EUI yang sama tidak dapat digunakan pada 2 akun TTN yang berbeda karena bersifat unik. Disini penulis akan menggunakan ID default yang dapat dilihat pada gambar pengaturan konfigurasi gateway.</li></ul><ul id="70875b37-2160-4651-9c23-f07403a5ca17" class="bulleted-list"><li style="list-style-type:circle">Gateway name: sebagai alias didalam aplikasi TTN</li></ul><ul id="55f2dea7-2da4-4e52-9df4-f87c88386630" class="bulleted-list"><li style="list-style-type:circle">Gateway description: masukan apa saja untuk mendeskripsikan perangkat</li></ul><ul id="7ee09218-dc8b-4498-b7a8-cd0ff94b8c45" class="bulleted-list"><li style="list-style-type:circle">Gateway server address: sudah terisi sesuai dengan region yang dipilih pada TTN</li></ul><ul id="0aa5ff0c-4c33-4e18-a4fa-b475eca07444" class="bulleted-list"><li style="list-style-type:circle">Frequency Plan: gunakan frequency plan yang sama dengan yang digunakan oleh Node</li></ul><ul id="30e8840c-9b03-4af4-928c-501d8f4ffd47" class="bulleted-list"><li style="list-style-type:circle">Enforce duty cyle: diaktifkan untuk mengikuti regulasi negara mengenai penggunaan jaringan radio tidak terlisensi.</li></ul><p id="f986116f-1bbc-448e-8774-0d3a15b5c7e1" class="">Jika sudah disesuaikan maka dapat menekan tombol “Create gateway”</p></li></ul><p id="bd102fa5-a9e8-4d71-8f1b-37041d2c6cf9" class="">
+</p><h3 id="6d619f37-92b0-408d-8a9b-c041a61041e2" class="">Pengaturan Gateway</h3><p id="fe65db74-74aa-49dc-88e0-29edbbafa6ad" class="">Gateway perlu terkoneksi pada jaringan internet untuk mengirimkan data dari node kepada gateway. Pada Pengaturan Gateway beberapa hal yang perlu diperhatikan adalah:</p><ul id="d9204fc7-a2d4-4ca1-9736-39972b83ef13" class="bulleted-list"><li style="list-style-type:disc">WiFi SSID: samakan SSID dengan SSID WiFi yang dituju</li></ul><ul id="b6feea43-d021-44b4-a313-198c79668c53" class="bulleted-list"><li style="list-style-type:disc">WiFi PASS: masukan password dari WiFi</li></ul><ul id="94dc6a71-d7eb-4b84-86a2-e71ac479e707" class="bulleted-list"><li style="list-style-type:disc">GatewayID: masukan gateway EUI yang sudah terdaftar pada TTN.</li></ul><ul id="3bc20a03-fc6d-429a-baeb-c653562a49c6" class="bulleted-list"><li style="list-style-type:disc">CH0 Freq: pengaturan dari frekuensi channel yang digunakan. Sesuaikan dengan frekuensi regional yang sudah diatur pada TTN</li></ul><ul id="2d8557af-4c95-4268-a4e5-891e68b6ff95" class="bulleted-list"><li style="list-style-type:disc">CH1 Freq: karena gateway yang digunakan mendukung dual channel, maka channel kedua akan digunakan bila channel pertama tidak mendapat jangkauan dengan baik.</li></ul><ul id="4cc4523a-730b-4ded-bf80-f668347e209b" class="bulleted-list"><li style="list-style-type:disc">SERVER ADDR: Alamat server yang digunakan. Address tersebut sudah disediakan dari TTN sehingga hanya perlu mengambilnya dari gateway server address yang digunakan pada TTN</li></ul><p id="d56d5e1a-f521-4e26-933a-e47fc2e3f3b3" class="">Jika pengaturan sudah sesuai, silahkan menekan tombol “Submit”</p><figure id="4af0ac3d-8b40-464e-b1f3-e2904a332e19" class="image"><a href="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Pengaturan_Gateway.png"><img style="width:3360px" src="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Pengaturan_Gateway.png"/></a></figure><h3 id="767f8efe-8936-4fbe-82a8-92ff500f7a19" class="">Pemrograman Node</h3><p id="353bdee0-a66d-43f9-b01b-23e0c3754aae" class="">Pemrograman Node dilakukan pada IDE Visual Studio menggunakan plugin Platform IO untuk mempermudah pengembangan. Setelah melakukan instalasi Visual Studio dan juga Platform IO, dilakukan pengunduhan file project LMIC Node.</p><p id="a6345a7e-a71e-43fc-be3d-a5e0e74ff566" class="">Setelah mengunduh file LMIC Node, masuk kedalam file LMIC Node melalui Platform IO, Kemudian buka file platformio. File ini digunakan untuk pemilihan jenis board LoRa yang sedang digunakan, disini interval dan juga monitor speed dapat diatur layaknya menggunakan Arduino IDE. </p><p id="292da04a-380f-4477-ba57-46d67349e063" class="">Kemudian, masih di file yang sama, aturlah frekuensi yang sedang digunakan, disesuaikan dengan konfigurasi TTN. Cara memilih opsi yang tersedia adalah dengan menghilangkan tanda comment.</p><p id="f62c8034-ebda-465a-bf75-739451bdc130" class="">Lalu, masuk kepada file selanjutnya yang berada di keyfiles &gt; lorawan-keys_example.h, file tersebut perlu diduplikasi dan kemudian di beri nama lorawan-keys.h. Hal ini dilakukan untuk memenuhi dependency yang dibutuhkan oleh project file dari LMIC Node. Masukan keys yang sesuai dengan yang diisi di TTN. Keys yang perlu diisi tergantung dari mode transmisi LoRaWAN yang digunakan, baik OTAA ataupun ABP. </p><p id="97510946-5e87-47e5-905a-b26c9de6e449" class="">Jika semua pengaturan sudah selesai, maka bisa dilanjutkan dengan mengatur programming dari LoRa node pada file src &gt; boards &gt; LMIC-node.cpp. Pada file ini sudah disediakan tempat untuk pengguna dapat mengatur pemrograman yang dibutuhkan dengan tanda yang bertuliskan “USER CODE BEGIN” dan “USER CODE END”. Pengguna hanya perlu menaruhkan setiap code diantara kedua tanda tersebut sesuai dengan deskripsi yang diberikan pada file tersebut. terdapat beberapa section dengan tanda yang sama untuk memudahkan pengguna. Proses pemrograman sama persis proses yang dilakukan pada Arduino IDE. Jika membutuhkan library tambahan, maka dapat dilakukan pada Platform IO home.</p><figure id="ac5f6c26-3b19-4e29-a9cb-335155ecf2b5" class="image"><a href="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Platform_IO_dan_VSCode.png"><img style="width:3360px" src="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Platform_IO_dan_VSCode.png"/></a></figure><p id="ac9a76af-ee7f-4c72-8c70-3f2d30a7801c" class="">
+</p><h3 id="52ab9c5c-c0ba-47bc-9183-b8126fb9690a" class="">Pengaturan Payload</h3><p id="3627f691-64bb-459f-9a90-35708c069cd7" class="">Untuk pengaturan Payload, yaitu file yang akan ditransmisikan, perlu dilakukan beberapa persiapan payload sebelum bisa dikirimkan melalui LoRa.</p><p id="fae6b2d8-0166-4bee-ba23-5b5059515d8f" class="">Untuk pengumpulan data, pengguna dapat melakukannya pada section “USER CODE BEGIN”  yang kedua, sesuai dengan deskripsi yang terdapat pada code. </p><p id="fa1e16bf-8922-4f18-a4c6-c1da0af21056" class="">Jika pengumpulan data sudah diprogramkan, maka pengguna dapat mengubah data yang dikumpulkan dalam bentuk unsigned 16-bit integer. Hal ini dilakukan agar ruang untuk menyimpan data lebih besar. </p><p id="737a76ea-44e1-44da-8afb-b753fb6d77d3" class="">Jika sudah dikonversikan, maka pengguna dapat memulai pengaturan data yang dikirimkan. Pertama pengguna perlu menentukan berapa payload length yang dibutuhkan. Payload length adalah jumlah payload buffer yang akan dikirimkan. 1 Payload Buffer dapat menyimpan 8 bit, sehingga jika data diubah menjadi 16 bit, maka akan dibutuhkan 2 Payload Buffer yang berisi data uint16_t. Pada payloadBuffer yang pertama, disimpan 8 bit terakhir, kemudian pada payload buffer berikutnya, disimpan 8 bit pertama dari data dan diikuti dengan bit kosong. Contoh persiapan data dapat dilihat di gambar dibawah.</p><figure id="c1ea081a-944e-4ef8-b1ba-c6957083912c" class="image"><a href="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Persiapan_Payload.png"><img style="width:2650px" src="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Persiapan_Payload.png"/></a></figure><h3 id="63d07498-1a2e-4901-a824-2d77b429e883" class="">Payload Formatters</h3><p id="722e0648-0769-4add-bdac-7084cb10e392" class="">Payload Formatters adalah pemrograman untuk melakukan decode terhadap file yang dikirimkan dari LoRa Node. Payload Formatters dapat diisi di TTN sebagai server penerima transmisi. contoh payload formatters dapat diambil dari file LMIC-Node pada bagian payload-formatters &gt; lmic-node-uplink-formatters.js. </p><p id="4004e11c-faca-4192-b4cd-d55d214ee10d" class="">Pada bagian conditional, perlu dilakukan penyesuaian sesuai dengan jumlah data yang digunakan. Contoh payload formatter dengan 4 payloadbuffer adalah sebagai berikut:</p><figure id="7f1939a4-99c7-46b0-b5b3-741c8c2d2ca3" class="image"><a href="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Payload_Formatters.png"><img style="width:2800px" src="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Payload_Formatters.png"/></a></figure><p id="81aac898-fbeb-408d-b6f4-06271fb38462" class="">Payload formatter yang perlu diisi di TTN dapat ditemukan pada bagian Applications &gt; Payload formatters &gt; Uplink. Gunakan “Custom Javascript formatter”.</p><h3 id="9d99acc7-80e1-4bd5-83c1-a4cdda2dcfe9" class="">Kesimpulan</h3><p id="81aa1829-be08-40ad-b62c-436436bb1e3a" class="">Bila seluruh proses sudah selesai, maka Node sudah bisa dijalankan. Tanpa pemrograman, LMIC Node sudah mendukung file dummy untuk testing apakah node dan gateway sudah berjalan dengan baik dalam bentuk pengiriman file uplink counter. Bila sudah dapat muncul pada TTN maka artinya sudah berhasil. Contoh data yang dibaca pada TTN seperti gambar dibawah.</p><figure id="892d46f7-da3f-452d-9231-42347e6c1ffa" class="image"><a href="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Setelah_target_menyala_tetap_yang_diambil_yang_palsu.png"><img style="width:3360px" src="Manual%20Pembuatan%20Sistem%20LoRa%202fd139e4bd5a40988efc8e9c255fe2e7/Setelah_target_menyala_tetap_yang_diambil_yang_palsu.png"/></a></figure><p id="87cb4ffe-a9c7-44b2-befe-4de4f8736e59" class="">
+</p></div></article></body></html>
